@@ -166,6 +166,16 @@ async function processVideoJob(jobId: string) {
       if (output.startsWith('PROGRESS:')) {
         const progress = parseInt(output.split(':')[1]);
         await storage.updateVideoJob(jobId, { progress });
+      } else if (output.startsWith('METRICS:')) {
+        const metricsJson = output.substring(8); // Remove 'METRICS:' prefix
+        try {
+          const metrics = JSON.parse(metricsJson);
+          await storage.updateVideoJob(jobId, { 
+            metadata: metrics 
+          });
+        } catch (e) {
+          console.error('Failed to parse metrics:', e);
+        }
       }
     });
 

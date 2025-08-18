@@ -7,9 +7,15 @@ interface ResultsSectionProps {
   jobId: string;
   originalVideoUrl?: string;
   isVisible: boolean;
+  metrics?: {
+    processing_time?: string;
+    style_match?: number;
+    colors_analyzed?: number;
+    output_size?: string;
+  };
 }
 
-export function ResultsSection({ jobId, originalVideoUrl, isVisible }: ResultsSectionProps) {
+export function ResultsSection({ jobId, originalVideoUrl, isVisible, metrics }: ResultsSectionProps) {
   if (!isVisible) return null;
 
   const handleDownload = (quality: 'hd' | 'sd') => {
@@ -109,19 +115,27 @@ export function ResultsSection({ jobId, originalVideoUrl, isVisible }: ResultsSe
         <div className="mt-6 bg-slate-50 rounded-lg p-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-slate-900" data-testid="stat-processing-time">3:24</div>
+              <div className="text-2xl font-bold text-slate-900" data-testid="stat-processing-time">
+                {metrics?.processing_time || '0:00'}
+              </div>
               <div className="text-sm text-slate-600">Processing Time</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-slate-900" data-testid="stat-style-match">94%</div>
+              <div className="text-2xl font-bold text-slate-900" data-testid="stat-style-match">
+                {metrics?.style_match || 0}%
+              </div>
               <div className="text-sm text-slate-600">Style Match</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-slate-900" data-testid="stat-colors-analyzed">247</div>
+              <div className="text-2xl font-bold text-slate-900" data-testid="stat-colors-analyzed">
+                {metrics?.colors_analyzed?.toLocaleString() || '0'}
+              </div>
               <div className="text-sm text-slate-600">Colors Analyzed</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-slate-900" data-testid="stat-output-size">42MB</div>
+              <div className="text-2xl font-bold text-slate-900" data-testid="stat-output-size">
+                {metrics?.output_size || '0MB'}
+              </div>
               <div className="text-sm text-slate-600">Output Size</div>
             </div>
           </div>

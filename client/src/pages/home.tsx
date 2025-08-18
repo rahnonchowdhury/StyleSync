@@ -275,6 +275,7 @@ export default function Home() {
           jobId={currentJob?.id || ''}
           originalVideoUrl={userVideo ? URL.createObjectURL(userVideo) : undefined}
           isVisible={currentJob?.status === 'completed'}
+          metrics={currentJob?.metadata}
         />
       </main>
 

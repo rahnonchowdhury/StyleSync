@@ -22,6 +22,12 @@ export const videoJobSchema = z.object({
   createdAt: z.date(),
   completedAt: z.date().optional(),
   errorMessage: z.string().optional(),
+  metadata: z.object({
+    processing_time: z.string().optional(),
+    style_match: z.number().optional(),
+    colors_analyzed: z.number().optional(),
+    output_size: z.string().optional(),
+  }).optional(),
 });
 
 export const createJobSchema = videoJobSchema.omit({
@@ -32,6 +38,7 @@ export const createJobSchema = videoJobSchema.omit({
   createdAt: true,
   completedAt: true,
   errorMessage: true,
+  metadata: true,
 });
 
 export type VideoJob = z.infer<typeof videoJobSchema>;
