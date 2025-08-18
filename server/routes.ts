@@ -151,7 +151,7 @@ async function processVideoJob(jobId: string) {
     const outputPath = path.join(outputDir, `output_${jobId}.mp4`);
 
     // Call Python video processor
-    const pythonProcess = spawn('python3', [
+    const pythonProcess = spawn('/home/runner/workspace/.pythonlibs/bin/python3', [
       path.join(process.cwd(), 'server', 'video_processor.py'),
       job.userVideoPath,
       job.referenceVideoPath || '',
