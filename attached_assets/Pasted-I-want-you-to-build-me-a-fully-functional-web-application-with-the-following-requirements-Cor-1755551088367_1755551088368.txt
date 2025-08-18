@@ -1,0 +1,46 @@
+I want you to build me a fully functional web application with the following requirements:
+
+📌 Core Idea:
+The website should let users:
+1. Upload a video they made.
+2. Upload a video from their favorite influencer.
+3. Automatically edit the user’s video so that it matches the style of the influencer’s video (color grading, transitions, pacing, audio enhancements, etc.).
+
+The app should then return the processed video back to the user for download or playback.
+
+---
+
+📌 Tech Stack:
+Please use a modern, industry-relevant tech stack that would look good on a resume when applying to big tech companies (Apple, Google, Meta, etc.):
+
+- **Frontend:** React (with TailwindCSS for styling, shadcn/ui for components). Make it clean, modern, and responsive.
+- **Backend:** Python with FastAPI (for APIs and video processing logic).
+- **Video Processing:** Use Python libraries like `moviepy` and `ffmpeg` to analyze and edit videos.
+- **Storage:** Store uploaded videos temporarily on the server (local storage is fine for now).
+- **Build/Run:** The project should run automatically when I open it in Replit (no manual setup beyond clicking "Run").
+
+---
+
+📌 Functionality Requirements:
+1. A landing page with a simple UI:  
+   - Upload user’s video  
+   - Upload influencer’s video  
+   - "Match Style" button  
+
+2. Backend should:  
+   - Extract style features from influencer’s video (color palette, cuts, speed, transitions, audio normalization).  
+   - Apply these features to the user’s video using Python processing.  
+   - Return the newly generated video back to the frontend for download/playback.  
+
+3. Show progress/loading indicators while the video is being processed.
+
+---
+
+📌 Additional Instructions:
+- Write clean, well-structured code with comments so I can follow what’s happening.
+- Make sure the website works end-to-end: I should be able to upload two videos, click a button, and get the styled output video.
+- At the end, explain in clear detail:  
+   1. What each tool (React, TailwindCSS, FastAPI, Python, ffmpeg, moviepy, etc.) is doing in this project.  
+   2. How the app actually works step by step (frontend → backend → processing → output).  
+
+This explanation should be something I can use to confidently describe the project on my resume and in interviews.
