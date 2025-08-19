@@ -13,20 +13,7 @@ export function Header() {
               <span className="ml-2 text-xl font-bold text-slate-900">StyleSync</span>
             </div>
           </div>
-          <nav className="hidden md:flex space-x-8">
-            <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors">How it Works</a>
-            <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors">Examples</a>
-            <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors">API</a>
-            <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors">Support</a>
-          </nav>
-          <div className="flex items-center space-x-4">
-            <button className="text-slate-600 hover:text-slate-900 transition-colors" data-testid="button-signin">
-              Sign In
-            </button>
-            <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors" data-testid="button-get-started">
-              Get Started
-            </button>
-          </div>
+
         </div>
       </div>
     </header>

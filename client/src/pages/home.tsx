@@ -49,7 +49,8 @@ export default function Home() {
     enabled: !!currentJobId,
     refetchInterval: (query) => {
       // Stop polling when job is completed or failed
-      if (query.data?.status === 'completed' || query.data?.status === 'failed') {
+      const data = query?.state?.data;
+      if (data?.status === 'completed' || data?.status === 'failed') {
         return false;
       }
       return 2000; // Poll every 2 seconds
@@ -165,24 +166,7 @@ export default function Home() {
           <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
             Upload your video and match it to any influencer's style. Automatic color grading, transitions, pacing, and audio enhancements powered by advanced AI.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              className="bg-primary text-white hover:bg-primary/90"
-              data-testid="button-start-creating"
-            >
-              <Sparkles className="w-4 h-4 mr-2" />
-              Start Creating
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg"
-              data-testid="button-watch-demo"
-            >
-              <Play className="w-4 h-4 mr-2" />
-              Watch Demo
-            </Button>
-          </div>
+
         </div>
       </section>
 
