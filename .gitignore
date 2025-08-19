@@ -127,8 +127,7 @@ tmp/
 temp/
 
 # Replit junk
-.local/
+.local
 .replit
 replit.md
-components.json
-attached_assets/
+attached_assets
