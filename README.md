@@ -1,8 +1,8 @@
-# VideoSync - AI-Powered Video Style Transfer
+# StyleSync - AI-Powered Video Style Transfer
 
-A sophisticated full-stack web application that analyzes uploaded reference videos and applies their exact visual characteristics to user videos using advanced AI and computer vision techniques.
+A full-stack web application that analyzes uploaded reference videos and applies their exact visual characteristics to user videos.
 
-## 🚀 Tech Stack
+## Tech Stack
 
 - **Frontend**: React 18 + TypeScript + TanStack Query + Wouter + shadcn/ui
 - **Backend**: Node.js + Express.js + Drizzle ORM + PostgreSQL  
@@ -10,7 +10,7 @@ A sophisticated full-stack web application that analyzes uploaded reference vide
 - **Database**: PostgreSQL with Drizzle ORM migrations
 - **Styling**: TailwindCSS with custom design system
 
-## ✨ Key Features
+## Key Features
 
 ### **True Reference-Based Style Transfer**
 - Analyzes 10+ frames from reference videos using FFmpeg signal statistics
@@ -34,42 +34,7 @@ A sophisticated full-stack web application that analyzes uploaded reference vide
 - Comprehensive style customization options
 - Built-in video preview and download functionality
 
-## 📁 Project Structure
-
-```
-video-style-transfer-app/
-│
-├── backend/                    # Express.js API server
-│   ├── src/
-│   │   ├── index.ts           # Server entry point
-│   │   ├── routes/            # API endpoints (upload, jobs, templates)
-│   │   ├── db/                # Drizzle ORM schema & migrations
-│   │   └── services/          # Business logic & Python processor
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── .env.example
-│
-├── frontend/                   # React application
-│   ├── src/
-│   │   ├── components/        # Reusable UI components
-│   │   ├── pages/             # Application pages
-│   │   ├── api/               # API client functions
-│   │   ├── hooks/             # Custom React hooks
-│   │   └── lib/               # Utility functions
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── vite.config.ts
-│
-├── python/                     # Video processing service
-│   ├── style_transfer.py      # Core FFmpeg processing logic
-│   └── requirements.txt       # Python dependencies
-│
-├── README.md                   # This file
-├── .gitignore                 # Git ignore patterns
-└── LICENSE
-```
-
-## 🛠 Installation & Setup
+## Installation & Setup
 
 ### Prerequisites
 
@@ -137,7 +102,7 @@ cd frontend
 npm run dev
 ```
 
-## 🎯 How It Works
+## How It Works
 
 ### **Upload & Analysis Workflow**
 
@@ -177,7 +142,7 @@ The application uses Drizzle ORM with PostgreSQL:
 - **Progress Tracking**: Python script outputs `PROGRESS:X` messages captured by Node.js
 - **Authentic Metrics**: Real processing times, actual colors analyzed, genuine output sizes
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -198,7 +163,7 @@ SESSION_SECRET=your-secret-key
 - File uploads handled through multipart form data
 - Output videos served as static files
 
-## 📊 Technical Achievements
+## Technical Achievements
 
 - **96% style matching accuracy** through FFmpeg signal analysis
 - **168,217 colors analyzed** per video using YUV color space extraction  
@@ -207,7 +172,7 @@ SESSION_SECRET=your-secret-key
 - **Type-safe architecture** using TypeScript across frontend and backend
 - **Zero placeholder data** - all metrics derived from actual video analysis
 
-## 🚀 Deployment
+## Deployment
 
 ### Production Build
 
@@ -228,31 +193,17 @@ npm run build
 3. **FFmpeg**: Ensure FFmpeg is installed on production server
 4. **Environment Variables**: Update .env with production values
 
-## 📈 Performance Metrics
+## Performance Metrics
 
 - **Processing Speed**: 2-3 minutes for HD videos with complex style transfer
 - **File Support**: MP4, MOV, AVI input formats with MP4 output
 - **Concurrent Jobs**: Supports multiple simultaneous video processing
 - **Memory Usage**: Optimized Python processing with efficient FFmpeg usage
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature-name`
 3. Commit changes: `git commit -m 'Add feature'`
 4. Push to branch: `git push origin feature-name`
 5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🔗 Links
-
-- **Live Demo**: [Your deployment URL]
-- **Documentation**: [Additional docs if any]
-- **Issues**: [GitHub issues page]
-
----
-
-Built with ❤️ using React, Express.js, and advanced AI video processing techniques.
