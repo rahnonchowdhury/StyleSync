@@ -125,3 +125,10 @@ coverage/
 # Temporary folders
 tmp/
 temp/
+
+# Replit junk
+.local/
+.replit
+replit.md
+components.json
+attached_assets/
