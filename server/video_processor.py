@@ -20,13 +20,124 @@ def get_video_info(video_path):
         print(f"Error getting video info: {e}")
         return None
 
-def apply_style_filters(input_path, output_path, style_template, options):
+def extract_video_style(reference_video_path):
+    """Extract style characteristics from reference video"""
+    try:
+        print("Analyzing reference video style characteristics...")
+        
+        # Extract color statistics using ffprobe
+        cmd = [
+            'ffprobe', '-f', 'lavfi', '-i', f'movie={reference_video_path},signalstats',
+            '-show_entries', 'frame=pkt_pts_time:frame_tags=lavfi.signalstats.YAVG,lavfi.signalstats.UAVG,lavfi.signalstats.VAVG,lavfi.signalstats.YMIN,lavfi.signalstats.YMAX',
+            '-print_format', 'json', '-read_intervals', '%+#10'
+        ]
+        
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        stats_data = json.loads(result.stdout)
+        
+        # Extract average color values from multiple frames
+        y_values = []
+        u_values = []
+        v_values = []
+        brightness_values = []
+        
+        for frame in stats_data.get('frames', []):
+            tags = frame.get('tags', {})
+            if 'lavfi.signalstats.YAVG' in tags:
+                y_values.append(float(tags['lavfi.signalstats.YAVG']))
+                u_values.append(float(tags.get('lavfi.signalstats.UAVG', 128)))
+                v_values.append(float(tags.get('lavfi.signalstats.VAVG', 128)))
+                
+                y_min = float(tags.get('lavfi.signalstats.YMIN', 0))
+                y_max = float(tags.get('lavfi.signalstats.YMAX', 255))
+                brightness_values.append((y_min + y_max) / 2)
+        
+        if not y_values:
+            return None
+            
+        # Calculate style characteristics
+        avg_y = sum(y_values) / len(y_values)
+        avg_u = sum(u_values) / len(u_values) 
+        avg_v = sum(v_values) / len(v_values)
+        avg_brightness = sum(brightness_values) / len(brightness_values)
+        
+        # Determine color temperature and characteristics
+        warm_bias = (avg_v - 128) / 128  # Positive = warm, negative = cool
+        green_magenta_bias = (avg_u - 128) / 128  # Positive = green, negative = magenta
+        
+        # Calculate contrast from brightness range
+        brightness_range = max(brightness_values) - min(brightness_values)
+        contrast_level = brightness_range / 255
+        
+        # Determine saturation level from U/V deviation
+        saturation_level = (abs(avg_u - 128) + abs(avg_v - 128)) / 128
+        
+        style_profile = {
+            'brightness': (avg_brightness - 128) / 128,  # -1 to 1
+            'contrast': contrast_level,  # 0 to 1
+            'saturation': saturation_level,  # 0 to 1+
+            'warm_bias': warm_bias,  # -1 to 1
+            'green_magenta_bias': green_magenta_bias,  # -1 to 1
+            'luminance': (avg_y - 128) / 128  # -1 to 1
+        }
+        
+        print(f"Extracted style profile: {style_profile}")
+        return style_profile
+        
+    except Exception as e:
+        print(f"Error extracting video style: {e}")
+        return None
+
+def apply_reference_style_filters(input_path, output_path, style_profile, options):
+    """Apply style filters based on extracted reference video characteristics"""
+    
+    filters = []
+    
+    # Convert style profile to filter parameters
+    brightness_adj = style_profile['brightness'] * 0.3  # Scale to reasonable range
+    contrast_adj = 1.0 + (style_profile['contrast'] * 0.5)  # 1.0 to 1.5
+    saturation_adj = 0.8 + (style_profile['saturation'] * 0.8)  # 0.8 to 1.6
+    
+    # Color balance adjustments based on reference
+    rs_adj = style_profile['warm_bias'] * 0.3  # Red-cyan balance
+    gs_adj = style_profile['green_magenta_bias'] * 0.2  # Green-magenta balance
+    bs_adj = -style_profile['warm_bias'] * 0.2  # Blue-yellow balance
+    
+    # Gamma adjustment based on luminance
+    gamma_adj = 1.0 + (style_profile['luminance'] * 0.3)
+    
+    # Apply extracted style characteristics
+    filters.extend([
+        f"eq=brightness={brightness_adj:.3f}:contrast={contrast_adj:.3f}:saturation={saturation_adj:.3f}:gamma={gamma_adj:.3f}",
+        f"colorbalance=rs={rs_adj:.3f}:gs={gs_adj:.3f}:bs={bs_adj:.3f}",
+    ])
+    
+    # Add curve adjustment based on contrast profile
+    if style_profile['contrast'] > 0.6:  # High contrast reference
+        filters.append("curves=all='0/0 0.2/0.1 0.8/0.9 1/1'")
+    elif style_profile['contrast'] < 0.3:  # Low contrast reference
+        filters.append("curves=all='0/0.1 0.5/0.5 1/0.9'")
+    else:  # Medium contrast
+        filters.append("curves=all='0/0 0.3/0.25 0.7/0.75 1/1'")
+    
+    # Add sharpening based on extracted characteristics
+    if style_profile['contrast'] > 0.5:
+        filters.append("unsharp=5:5:1.0:5:5:0.5")
+    
+    print(f"Applied reference-based filters: {filters}")
+    return filters
+
+def apply_style_filters(input_path, output_path, style_template, options, reference_style=None):
     """Apply comprehensive style-specific video filters using ffmpeg"""
     
     filters = []
     
-    # Style-specific filter chains with comprehensive transformations
-    if style_template == 'cinematic':
+    # If we have extracted reference style, use that instead of templates
+    if reference_style:
+        filters = apply_reference_style_filters(input_path, output_path, reference_style, options)
+    
+    # Fallback to template-based styling
+    elif style_template == 'cinematic':
         # Film-like color grading with dramatic effects
         filters.extend([
             "curves=all='0/0 0.25/0.15 0.75/0.85 1/1'",  # Strong S-curve
@@ -183,18 +294,25 @@ def apply_style_transfer(user_video_path, reference_video_path, style_template, 
         print(f"PROGRESS:25")
         print(f"Preparing style filters...")
         
+        reference_style = None
         if reference_video_path and os.path.exists(reference_video_path):
             print(f"PROGRESS:35")
             print(f"Analyzing reference video: {reference_video_path}")
-            # For now, we'll use template-based processing even with reference videos
-            # This could be enhanced to extract actual color data from reference videos
-            style_template = style_template or 'cinematic'
+            reference_style = extract_video_style(reference_video_path)
+            if reference_style:
+                print(f"PROGRESS:45")
+                print("Successfully extracted reference style characteristics")
+            else:
+                print("Failed to extract reference style, falling back to template")
         
         print(f"PROGRESS:50")
-        print(f"Applying {style_template} style transfer...")
+        if reference_style:
+            print(f"Applying reference-based style transfer...")
+        else:
+            print(f"Applying {style_template} template style transfer...")
         
-        # Apply style-specific filters
-        ffmpeg_cmd = apply_style_filters(user_video_path, output_path, style_template, options)
+        # Apply style-specific filters (reference-based or template-based)
+        ffmpeg_cmd = apply_style_filters(user_video_path, output_path, style_template, options, reference_style)
         
         print(f"PROGRESS:60")
         print("Processing video with style filters...")
