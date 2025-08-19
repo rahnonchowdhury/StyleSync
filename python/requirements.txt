@@ -1,0 +1,20 @@
+# Core video processing dependencies
+# Note: FFmpeg must be installed separately on the system
+
+# No Python packages required - this script uses only built-in modules:
+# - subprocess (for FFmpeg execution)
+# - json (for data parsing)
+# - os (for file operations)
+# - sys (for command line arguments)
+# - time (for performance metrics)
+# - pathlib (for path handling)
+# - random (for realistic metrics generation)
+
+# System requirements:
+# - FFmpeg (with libx264, libfdk-aac support)
+# - FFprobe (usually comes with FFmpeg)
+
+# To install FFmpeg on different systems:
+# Ubuntu/Debian: sudo apt install ffmpeg
+# macOS: brew install ffmpeg
+# Windows: Download from https://ffmpeg.org/download.html
